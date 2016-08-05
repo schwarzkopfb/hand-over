@@ -11,7 +11,8 @@
     "tap": "^6.3.0"
   },
   "scripts": {
-    "test": "tap test/*.js"
+    "test": "tap test/*.js",
+    "coverage": "npm test -- --cov --coverage-report=lcov"
   },
   "repository": {
     "type": "git",

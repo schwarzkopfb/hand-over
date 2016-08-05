@@ -10,6 +10,10 @@ var assert       = require('assert'),
     Plugin       = require('./plugin')
 
 function Handover() {
+    // make use of `new` optional
+    if (!(this instanceof Handover))
+        return new Handover
+
     EventEmitter.call(this)
 
     Object.defineProperties(this, {
@@ -32,6 +36,14 @@ Object.defineProperties(Handover, {
 
         get: function () {
             return require('./package.json').version
+        }
+    },
+
+    Plugin: {
+        enumerable: true,
+
+        get: function () {
+            return Plugin
         }
     }
 })
@@ -119,6 +131,12 @@ Object.defineProperties(Handover.prototype, {
         enumerable: true,
 
         value: unregisterTargets
+    },
+
+    inspect: {
+        enumerable: true,
+
+        value: inspect
     }
 })
 
@@ -138,20 +156,23 @@ function noTransform(uid, chn, pl, cb) {
 function installPlugin(nameOrPlugin, options) {
     assert(nameOrPlugin, 'name or plugin is required')
 
-    var ctor, plugin, self = this
+    var plugin,
+        ctor,
+        self   = this,
+        parent = module.parent
 
     if (typeof nameOrPlugin === 'string')
         try {
             // local plugin
             if (nameOrPlugin.substring(0, 2) === './')
-                ctor = module.parent.require(nameOrPlugin)
+                ctor = parent.require(nameOrPlugin)
             // installed plugin with prefixed name 'hand-over-'
             else
-                ctor = require('hand-over-' + nameOrPlugin)
+                ctor = parent.require('hand-over-' + nameOrPlugin)
         }
         catch (ex) {
             // installed plugin without prefix
-            ctor = require(nameOrPlugin)
+            ctor = parent.require(nameOrPlugin)
         }
     else
         ctor = nameOrPlugin
@@ -366,4 +387,8 @@ function removeTargets(self, userId, channel, targets, callback) {
         // there is nothing to do here
         process.nextTick(callback, null)
     }
+}
+
+function inspect() {
+    // todo
 }

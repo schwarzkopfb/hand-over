@@ -3,24 +3,26 @@
 if (require.main === module)
     return require('tap').pass()
 
-module.exports = MyOtherPlugin
+module.exports = MyPlugin
 
 var inherits = require('util').inherits,
     Plugin   = require('../plugin')
 
-function MyOtherPlugin(opts) {
+function MyPlugin(opts) {
     Plugin.call(this, opts)
+    this.name = 'test'
 
     if (!opts || typeof opts !== 'object')
         throw new TypeError('no options object passed')
-    else if (!opts.test)
-        throw new TypeError('invalid options object passed')
 }
 
-inherits(MyOtherPlugin, Plugin)
+inherits(MyPlugin, Plugin)
 
-MyOtherPlugin.prototype.name = 'other_test'
-
-MyOtherPlugin.prototype.send = function (to, data, callback) {
+MyPlugin.prototype.send = function (to, data, callback) {
     callback()
+}
+
+// used for error delegation testing
+MyPlugin.prototype.emitError = function (err) {
+    this.emit('error', err)
 }
