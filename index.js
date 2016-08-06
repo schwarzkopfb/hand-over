@@ -164,6 +164,7 @@ function cloneArray(a) {
  *
  * @param {string|function|object} nameOrPlugin - Plugin name, constructor or instance to install.
  * @param {*} [options] - Initialization settings for the plugin.
+ * @returns {Handover}
  */
 function installPlugin(nameOrPlugin, options) {
     assert(nameOrPlugin, 'name or plugin is required')
@@ -210,15 +211,19 @@ function installPlugin(nameOrPlugin, options) {
 
         self.emit('error', err)
     })
+
+    // make it chainable
+    return this
 }
 
 /**
- * Send a notification to a user via the selected channels.
+ * Send a notification to a user via the selected channel(s).
  *
  * @param {*} userId - User identifier. Type is mostly string or number but depends on the consumer.
  * @param {string|string[]} [channels] - Optionally use only a subset of installed channels for this notification.
  * @param {*} payload - The actual notification data. Must be consumable by all the installed plugins.
  * @param {function} callback
+ * @returns {Handover}
  */
 function sendNotifications(userId, channels, payload, callback) {
     // is channel list restricted?
@@ -302,6 +307,9 @@ function sendNotifications(userId, channels, payload, callback) {
         // so there is nothing to do here
         process.nextTick(callback, null)
     }
+
+    // make it chainable
+    return this
 }
 
 /**
@@ -311,12 +319,16 @@ function sendNotifications(userId, channels, payload, callback) {
  * @param {string} channel - Channel name.
  * @param {*} target - An address to send notifications to. Eg. phone number, email address, push notification token, etc.
  * @param {function} callback
+ * @returns {Handover}
  */
 function registerTarget(userId, channel, target, callback) {
     this.save(userId, channel, target, function (err) {
         // ensure that we're firing the callback asynchronously
         process.nextTick(callback, err)
     })
+
+    // make it chainable
+    return this
 }
 
 /**
@@ -326,6 +338,7 @@ function registerTarget(userId, channel, target, callback) {
  * @param {string} channel - Channel name.
  * @param {*|*[]} [targets] - The target or list of targets to remove. If not supplied, then all the targets of the given channel will be removed.
  * @param {function(?Error[])} callback
+ * @returns {Handover}
  */
 function unregisterTargets(userId, channel, targets, callback) {
     var self = this
@@ -365,6 +378,9 @@ function unregisterTargets(userId, channel, targets, callback) {
 
         removeTargets(self, userId, channel, targets, callback)
     }
+
+    // make it chainable
+    return this
 }
 
 /**
