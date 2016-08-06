@@ -40,7 +40,7 @@ n.load = function (userId, channel, callback) {
 
 // todo: validate next tick
 n.send(1, payload, function (err) {
-    test.notOk(err, 'no error should be returned')
+    test.notOk(err, 'error should not be returned')
     test.same(foo.lastTarget, 'moon', 'correct target should be used')
     test.same(foo.lastPayload, payload, 'payload should be delivered')
     test.same(bar.lastTarget, 'moon', 'correct target should be used')

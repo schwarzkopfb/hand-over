@@ -235,8 +235,8 @@ function sendNotifications(userId, channels, payload, callback) {
     else
         channels = only(this._plugins, words(channels))
 
-    // helper for decorating error objects with debug info when possible,
-    // then store it to pass back to the caller when we're done
+    // helper for decorating error objects with debug info when possible
+    // and storing them to pass back to the caller when we're done
     function failed(err, userId, channel, target) {
         if (err && typeof err === 'object') {
             err.userId  = userId
@@ -400,28 +400,25 @@ function removeTargets(self, userId, channel, targets, callback) {
     var pending = targets.length,
         errors  = []
 
-    function done(target, err) {
-        // something went wrong
-        if (err) {
-            // decorate errors with debug info
-            if (typeof err === 'object') {
-                err.userId  = userId
-                err.channel = channel
-                err.target  = target
-            }
-
-            // collect errors to pass back later to the caller
-            errors.push(err)
-        }
-
-        // count pending operations and then pass back the control to the caller
-        --pending || process.nextTick(callback, errors.length ? errors : null)
-    }
-
     if (pending)
         targets.forEach(function (target) {
-            // preserve `target` to be able to provide it in case of error
-            self.remove(userId, channel, target, done.bind(null, target))
+            self.remove(userId, channel, target, function (err) {
+                // something went wrong
+                if (err) {
+                    // decorate errors with debug info
+                    if (typeof err === 'object') {
+                        err.userId  = userId
+                        err.channel = channel
+                        err.target  = target
+                    }
+
+                    // collect errors to pass back later to the caller
+                    errors.push(err)
+                }
+
+                // count pending operations and then pass back the control to the caller
+                --pending || process.nextTick(callback, errors.length ? errors : null)
+            })
         })
     else {
         // no targets found, so
