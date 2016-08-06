@@ -228,7 +228,7 @@ function installPlugin(nameOrPlugin, options) {
 function sendNotifications(userId, channels, payload, callback) {
     // is channel list restricted?
     if (arguments.length < 4) {
-        callback = data
+        callback = payload
         payload  = channels
         channels = this._plugins
     }
