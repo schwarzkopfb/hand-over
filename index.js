@@ -415,5 +415,6 @@ function removeTargets(self, userId, channel, targets, callback) {
 }
 
 function inspect() {
-    // todo
+    return 'Handover {\n' + require('util').format(this._plugins)
+                                           .substring(1)
 }

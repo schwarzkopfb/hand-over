@@ -180,8 +180,6 @@ var tests = [
 void function next(i, val) {
     var fn = tests[ i++ ]
 
-    if (fn) {
-        val = fn(val)
-        process.nextTick(next, i, val)
-    }
+    if (fn)
+        process.nextTick(next, i, fn(val))
 }(0)

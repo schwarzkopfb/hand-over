@@ -52,5 +52,18 @@ Object.defineProperties(HandoverPlugin.prototype, {
                 value:      fn
             })
         }
+    },
+
+    inspect: {
+        enumerable: true,
+        writable:   true,
+        value:      inspect
     }
 })
+
+function inspect() {
+    return 'HandoverPlugin {\n  ' +
+        "name: '" + this.name + "',\n  " +
+        'options: ' + require('util').format(this.options) +
+        ' }'
+}

@@ -72,7 +72,20 @@ test.test('`use()` signatures', function (test) {
         assert.AssertionError,
         '`use()` should assert its args'
     )
-    // todo: p.name & p.send assertions
+    test.throws(
+        function () {
+            n.use({ /* name is missing */ send: noop })
+        },
+        assert.AssertionError,
+        '`use()` should assert its args'
+    )
+    test.throws(
+        function () {
+            n.use({ name: 'test' /* send fn not specified */ })
+        },
+        assert.AssertionError,
+        '`use()` should assert its args'
+    )
 
     test.end()
 })

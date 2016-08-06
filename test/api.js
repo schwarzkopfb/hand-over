@@ -1,5 +1,8 @@
 'use strict'
 
+// todo: still waiting for my `tap` PR to be merged
+// Object.prototype[ 'this should not mess up anything' ] = null
+
 var assert       = require('assert'),
     EventEmitter = require('events').EventEmitter,
     test         = require('tap'),
@@ -23,6 +26,7 @@ test.test('main', function (test) {
     test.type(n.register, 'function', 'instance should have a `register()` fn')
     test.type(n.unregister, 'function', 'instance should have a `unregister()` fn')
     test.type(n.inspect, 'function', 'instance should have a custom `inspect()` fn')
+    test.type(n.inspect(), 'string', 'instance inspection should return a string')
 
     test.throws(
         function () {
@@ -57,22 +61,29 @@ test.test('main', function (test) {
 })
 
 test.test('plugin', function (test) {
-    var plugin = new Plugin
+    var p = new Plugin
 
     test.throws(
         function () {
-            plugin.name
+            p.name
         },
         assert.AssertionError,
         'plugin name exposition should be enforced'
     )
     test.throws(
         function () {
-            plugin.send
+            p.send
         },
         assert.AssertionError,
         'plugin `send` fn exposition should be enforced'
     )
+
+    // set the name otherwise it still throws ans
+    // inspect will try to get that
+    p.name = 'test'
+
+    test.type(p.inspect, 'function', 'instance should have a custom `inspect()` fn')
+    test.type(p.inspect(), 'string', 'instance inspection should return a string')
 
     test.end()
 })
