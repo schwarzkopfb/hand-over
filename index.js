@@ -148,6 +148,18 @@ function noTransform(uid, chn, pl, cb) {
 }
 
 /**
+ * Utility that clones an array.
+ *
+ * @param {Array} a
+ * @return {Array}
+ */
+function cloneArray(a) {
+    var b = [], i = a.length
+    while (i--) b[ i ] = a[ i ]
+    return b
+}
+
+/**
  * Include and initialize a plugin that handles a notification channel.
  *
  * @param {string|function|object} nameOrPlugin - Plugin name, constructor or instance to install.
@@ -257,6 +269,11 @@ function sendNotifications(userId, channels, payload, callback) {
 
                     if (!Array.isArray(targets))
                         targets = [ targets ]
+                    else {
+                        // dereference the original array,
+                        // because that may not be trustworthy
+                        targets = cloneArray(targets)
+                    }
 
                     if (targets.length) {
                         // we're initiating operations for each target,
@@ -308,14 +325,17 @@ function registerTarget(userId, channel, target, callback) {
  * @param {*} userId - User identifier. Type is mostly string or number but depends on the consumer.
  * @param {string} channel - Channel name.
  * @param {*|*[]} [targets] - The target or list of targets to remove. If not supplied, then all the targets of the given channel will be removed.
- * @param {function} callback
+ * @param {function(?Error[])} callback
  */
 function unregisterTargets(userId, channel, targets, callback) {
     var self = this
 
-    // no target list specified, so we need to load al the targets
+    // no target list specified, so we need to load all the targets
     // of the supplied channel
-    if (arguments.length < 4)
+    if (arguments.length < 4) {
+        // probably we've got the callback as the third arg
+        callback = targets
+
         this.load(userId, channel, function (err, targets) {
             // cannot load targets of the given channel
             // call back with the error
@@ -325,20 +345,21 @@ function unregisterTargets(userId, channel, targets, callback) {
                     err.channel = channel
                 }
 
-                process.nextTick(callback, err)
+                process.nextTick(callback, [ err ])
             }
             // we've got that list!
             else {
-                // ..or maybe that's not really a list?
+                // ...or maybe that's not really a list?
                 if (!Array.isArray(targets))
                     targets = [ targets ]
 
                 removeTargets(self, userId, channel, targets, callback)
             }
         })
+    }
     // we've got an explicit target list, go remove them
     else {
-        // ..or maybe that's not really a list?
+        // ...or maybe that's not really a list?
         if (!Array.isArray(targets))
             targets = [ targets ]
 
@@ -356,6 +377,10 @@ function unregisterTargets(userId, channel, targets, callback) {
  * @param {function} callback
  */
 function removeTargets(self, userId, channel, targets, callback) {
+    // dereference the original array,
+    // because that may not be trustworthy
+    targets = cloneArray(targets)
+
     var pending = targets.length,
         errors  = []
 
@@ -373,7 +398,7 @@ function removeTargets(self, userId, channel, targets, callback) {
             errors.push(err)
         }
 
-        // count pending operations and then call back
+        // count pending operations and then pass back the control to the caller
         --pending || process.nextTick(callback, errors.length ? errors : null)
     }
 
