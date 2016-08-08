@@ -9,7 +9,7 @@ var assert       = require('assert'),
     Handover     = require('../'),
     Plugin       = require('../plugin')
 
-test.plan(18)
+test.plan(20)
 
 function noop() {
 }
@@ -26,6 +26,8 @@ test.type(n.use, 'function', 'instance should have a `use()` fn')
 test.type(n.send, 'function', 'instance should have a `send()` fn')
 test.type(n.register, 'function', 'instance should have a `register()` fn')
 test.type(n.unregister, 'function', 'instance should have a `unregister()` fn')
+test.type(n.unref, 'function', 'instance should have a custom `unref()` fn')
+test.type(n.unref(), Handover, '`unref()` should be chainable')
 test.type(n.inspect, 'function', 'instance should have a custom `inspect()` fn')
 test.type(n.inspect(), 'string', 'instance inspection should return a string')
 

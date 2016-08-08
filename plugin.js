@@ -39,7 +39,7 @@ Object.defineProperties(HandoverPlugin.prototype, {
         configurable: true,
 
         get: function () {
-            assert.fail('undefined', 'function', this.name + ' plugin does not implement `send` method', '===')
+            assert.fail('undefined', 'function', this.name + ' plugin does not implement `send()`', '===')
         },
 
         set: function (fn) {
@@ -48,6 +48,25 @@ Object.defineProperties(HandoverPlugin.prototype, {
 
             delete this.send
             Object.defineProperty(this, 'send', {
+                enumerable: true,
+                value:      fn
+            })
+        }
+    },
+
+    destroy: {
+        enumerable:   true,
+        configurable: true,
+
+        get: function () {
+            assert.fail('undefined', 'function', this.name + ' plugin does not implement `destroy()`', '===')
+        },
+
+        set: function (fn) {
+            assert.equal(typeof fn, 'function', '`destroy` must be a function')
+
+            delete this.destroy
+            Object.defineProperty(this, 'destroy', {
                 enumerable: true,
                 value:      fn
             })

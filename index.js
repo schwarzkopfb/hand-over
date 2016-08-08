@@ -133,6 +133,12 @@ Object.defineProperties(Handover.prototype, {
         value: unregisterTargets
     },
 
+    unref: {
+        enumerable: true,
+
+        value: unreference
+    },
+
     inspect: {
         enumerable: true,
 
@@ -425,6 +431,33 @@ function removeTargets(self, userId, channel, targets, callback) {
         // there is nothing to do here
         process.nextTick(callback, null)
     }
+}
+
+/**
+ * Unreference all the included plugins to let the process exit gracefully.
+ *
+ * @returns {Handover}
+ */
+function unreference() {
+    var plugins = this._plugins
+
+    Object.keys(plugins).forEach(function (name) {
+        var plugin = plugins[ name ]
+
+        // `unref()` is preferred
+        if (typeof plugin.unref === 'function')
+            plugin.unref()
+        // if we cannot stop gracefully then destroy open
+        // connections immediately
+        else {
+            // `destroy()` is required by `Plugin` base class,
+            // so it's guaranteed that it exists
+            plugin.destroy()
+        }
+    })
+
+    // make it chainable
+    return this
 }
 
 function inspect() {
