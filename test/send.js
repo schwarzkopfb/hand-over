@@ -18,7 +18,7 @@ TestPlugin.prototype.send = function (target, payload, callback) {
     this.delivered++
     this.lastTarget  = target
     this.lastPayload = payload
-    callback()
+    callback(this.failWith)
 }
 
 var foo = new TestPlugin('foo'),
@@ -146,9 +146,75 @@ var tests = [
         // note: delivery counters and payload must remain the same
         validate([ foo, bar, baz ], 'moon', 'animal', 5)
         test.equal(counter, 6, 'callback should be called in the next tick')
+    },
+    // transform error during send
+    function () {
+        var err     = new Error('test')
+        n.load      = loadOne
+        n.transform = function (userId, channel, payload, callback) {
+            callback(err)
+        }
+        n.send(1, 'foo', 'message', callback())
+        test.equal(counter, 6, 'callback should be called in the next tick')
+        return err
+    },
+    function (err) {
+        test.same(error, [ err ], 'errors array should be returned')
+        test.equal(err.userId, 1, 'error should be decorated with userId')
+        test.equal(err.channel, 'foo', 'error should be decorated with channel')
+        test.equal(counter, 7, 'callback should be called in the next tick')
+        return err
+    },
+    // load error during send
+    function (err) {
+        n.transform = function (userId, channel, payload, callback) {
+            callback(null, payload)
+        }
+        n.load      = function (userId, channel, callback) {
+            callback(err)
+        }
+        n.send(1, 'foo', 'message', callback())
+        test.equal(counter, 7, 'callback should be called in the next tick')
+        return err
+    },
+    function (err) {
+        test.same(error, [ err ], 'errors array should be returned')
+        test.equal(err.userId, 1, 'error should be decorated with userId')
+        test.equal(err.channel, 'foo', 'error should be decorated with channel')
+        test.equal(counter, 8, 'callback should be called in the next tick')
+    },
+    // plugin error during send
+    function () {
+        var err      = new Error('test')
+        n.load       = loadOne
+        foo.failWith = err
+        n.send(1, 'foo', 'message', callback())
+        test.equal(counter, 8, 'callback should be called in the next tick')
+        return err
+    },
+    function (err) {
+        test.same(error, [ err ], 'errors array should be returned')
+        test.equal(err.userId, 1, 'error should be decorated with userId')
+        test.equal(err.channel, 'foo', 'error should be decorated with channel')
+        test.equal(err.target, 'moon', 'error should be decorated with target')
+        test.equal(counter, 9, 'callback should be called in the next tick')
+    },
+    // non-standard plugin error during send
+    function () {
+        var err      = 'test'
+        n.load       = loadOne
+        foo.failWith = err
+        n.send(1, 'foo', 'message', callback())
+        test.equal(counter, 9, 'callback should be called in the next tick')
+        return err
+    },
+    function (err) {
+        test.same(error, [ err ], 'errors array should be returned')
+        test.equal(counter, 10, 'callback should be called in the next tick')
+    },
+    function () {
+        test.notOk(pending, 'all the callbacks should be called')
     }
-    // todo: transformations
-    // todo: errors
 ]
 
 void function next(i, val) {
