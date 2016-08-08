@@ -8,10 +8,14 @@ var assert   = require('assert'),
     opts     = { test: 42 },
     p1inst   = new p1(opts)
 
+test.plan(2)
+
 function noop() {
 }
 
 test.test('`use()` signatures', function (test) {
+    test.plan(11)
+
     test.doesNotThrow(
         function () {
             // do not pass an options obj to test defaulting to `{}`
@@ -91,6 +95,8 @@ test.test('`use()` signatures', function (test) {
 })
 
 test.test('error delegation', function (test) {
+    test.plan(3)
+
     var error = new Error('test')
 
     n.once('error', function (err) {

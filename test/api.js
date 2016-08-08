@@ -9,6 +9,8 @@ var assert       = require('assert'),
     Handover     = require('../'),
     Plugin       = require('../plugin')
 
+test.plan(18)
+
 function noop() {
 }
 
@@ -62,6 +64,8 @@ test.test('chaining', function (test) {
 })
 
 test.test('plugin', function (test) {
+    test.plan(4)
+
     var p = new Plugin
 
     test.throws(

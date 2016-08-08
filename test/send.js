@@ -6,6 +6,8 @@ var inherits = require('util').inherits,
     Plugin   = Handover.Plugin,
     n        = new Handover
 
+test.plan(87)
+
 function TestPlugin(name) {
     Plugin.call(this, name)
     this.name      = name

@@ -4,6 +4,8 @@ var test     = require('tap'),
     Handover = require('../'),
     n        = new Handover
 
+test.plan(24)
+
 var db = {}
 
 function record(userId, channel) {
