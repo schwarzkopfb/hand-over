@@ -2,6 +2,7 @@
 
 var inherits = require('util').inherits,
     test     = require('tap'),
+    chain    = require('./chain'),
     Handover = require('../'),
     Plugin   = Handover.Plugin,
     n        = new Handover
@@ -219,9 +220,4 @@ var tests = [
     }
 ]
 
-void function next(i, val) {
-    var fn = tests[ i++ ]
-
-    if (fn)
-        process.nextTick(next, i, fn(val))
-}(0)
+chain(tests)
