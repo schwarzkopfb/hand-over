@@ -21,6 +21,8 @@ function TestPlugin(opts) {
         test.type(callback, 'function')
         callback()
     }
+
+    this.destroy = noop
 }
 
 inherits(TestPlugin, Handover.Plugin)

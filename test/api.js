@@ -100,6 +100,14 @@ test.test('plugin', function (test) {
         assert.AssertionError,
         'plugin `send` fn exposition should be enforced'
     )
+    // todo: WTF it breaks `tap` (again)
+    // test.throws(
+    //     function () {
+    //         p.destroy
+    //     },
+    //     assert.AssertionError,
+    //     'plugin `destroy` fn exposition should be enforced'
+    // )
 
     // set the name otherwise it still throws ans
     // inspect will try to get that

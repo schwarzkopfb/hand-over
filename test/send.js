@@ -27,6 +27,9 @@ TestPlugin.prototype.send = function (target, payload, callback) {
     callback(this.failWith)
 }
 
+TestPlugin.prototype.destroy = function () {
+}
+
 var foo = new TestPlugin('foo'),
     bar = new TestPlugin('bar'),
     baz = new TestPlugin('baz')
