@@ -8,7 +8,8 @@
     "only": "0.0.2"
   },
   "devDependencies": {
-    "tap": "^6.3.0"
+    "tap": "^6.3.0",
+    "process.nexttick": "~1.0.1"
   },
   "scripts": {
     "test": "tap test/*.js",

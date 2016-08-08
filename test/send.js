@@ -1,5 +1,8 @@
 'use strict'
 
+// support Node <1
+process.nextTick = require('process.nexttick')
+
 var inherits = require('util').inherits,
     test     = require('tap'),
     chain    = require('./chain'),

@@ -1,5 +1,8 @@
 'use strict'
 
+// support Node <1
+process.nextTick = require('process.nexttick')
+
 var test     = require('tap'),
     chain    = require('./chain'),
     Handover = require('../'),
