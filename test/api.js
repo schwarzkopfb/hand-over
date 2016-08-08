@@ -59,7 +59,23 @@ test.doesNotThrow(
 test.type(n.transform, 'function', '`transform` should have a default fn')
 
 test.test('chaining', function (test) {
-    // todo
+    test.plan(4)
+
+    n.save   = function (userId, channel, target, callback) {
+        callback()
+    }
+    n.load   = function (userId, channel, callback) {
+        callback()
+    }
+    n.remove = function (userId, channel, target, callback) {
+        callback()
+    }
+
+    test.equal(n.use('./plugin1'), n, '`use()` should be chainable')
+    test.equal(n.send(1, 'foo', noop), n, '`send()` should be chainable')
+    test.equal(n.register(1, 'foo', 'bar', noop), n, '`register()` should be chainable')
+    test.equal(n.unregister(1, 'foo', noop), n, '`unregister()` should be chainable')
+
     test.end()
 })
 
