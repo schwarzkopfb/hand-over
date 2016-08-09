@@ -1,6 +1,7 @@
 'use strict'
 
 var assert   = require('assert'),
+    inherits = require('util').inherits,
     test     = require('tap'),
     Handover = require('../'),
     n        = new Handover,
@@ -8,7 +9,7 @@ var assert   = require('assert'),
     opts     = { test: 42 },
     p1inst   = new p1(opts)
 
-test.plan(2)
+test.plan(3)
 
 function noop() {
 }
@@ -90,8 +91,6 @@ test.test('`use()` signatures', function (test) {
         assert.AssertionError,
         '`use()` should assert its args'
     )
-
-    test.end()
 })
 
 test.test('error delegation', function (test) {
@@ -109,6 +108,27 @@ test.test('error delegation', function (test) {
         test.equal(err, 'test', 'non-standard error values should not cause any problem')
     })
     p1inst.emitError('test')
+})
 
-    test.end()
+test.test('unref', function (test) {
+    test.plan(2)
+
+    function TestPlugin() {
+        Handover.Plugin.call(this)
+        this.name = 'test'
+        this.send = function (a, b, c) {}
+        this.unref = function () {
+            test.pass('`unref()` called instead of destroy')
+        }
+        this.destroy = function () {
+            test.pass('`destroy()` is used when no `unref()` present')
+        }
+    }
+    inherits(TestPlugin, Handover.Plugin)
+    var plugin = new TestPlugin
+
+    n.use(plugin)
+    n.unref()
+    delete plugin.unref
+    n.unref()
 })

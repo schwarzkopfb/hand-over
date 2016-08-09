@@ -61,7 +61,7 @@ test.doesNotThrow(
 test.type(n.transform, 'function', '`transform` should have a default fn')
 
 test.test('chaining', function (test) {
-    test.plan(4)
+    test.plan(5)
 
     n.save   = function (userId, channel, target, callback) {
         callback()
@@ -77,12 +77,13 @@ test.test('chaining', function (test) {
     test.equal(n.send(1, 'foo', noop), n, '`send()` should be chainable')
     test.equal(n.register(1, 'foo', 'bar', noop), n, '`register()` should be chainable')
     test.equal(n.unregister(1, 'foo', noop), n, '`unregister()` should be chainable')
+    test.equal(n.unref(), n, '`unref()` should be chainable')
 
     test.end()
 })
 
 test.test('plugin', function (test) {
-    test.plan(4)
+    test.plan(5)
 
     var p = new Plugin
 
@@ -100,14 +101,13 @@ test.test('plugin', function (test) {
         assert.AssertionError,
         'plugin `send` fn exposition should be enforced'
     )
-    // todo: WTF it breaks `tap` (again)
-    // test.throws(
-    //     function () {
-    //         p.destroy
-    //     },
-    //     assert.AssertionError,
-    //     'plugin `destroy` fn exposition should be enforced'
-    // )
+    test.throws(
+        function () {
+            p.destroy
+        },
+        assert.AssertionError,
+        'plugin `destroy` fn exposition should be enforced'
+    )
 
     // set the name otherwise it still throws ans
     // inspect will try to get that
