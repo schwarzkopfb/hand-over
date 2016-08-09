@@ -81,7 +81,8 @@ Object.defineProperties(HandoverPlugin.prototype, {
 })
 
 function inspect() {
-    return 'HandoverPlugin {\n  ' +
+    var name = this.constructor.name || 'HandoverPlugin'
+    return name + ' {\n  ' +
         "name: '" + this.name + "',\n  " +
         'options: ' + require('util').format(this.options) +
         ' }'
