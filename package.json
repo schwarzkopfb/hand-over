@@ -1,6 +1,6 @@
 {
   "name": "hand-over",
-  "version": "1.0.0-0",
+  "version": "1.0.0-1",
   "description": "High-level abstraction for sending notifications via various channels (push, e-mail, sms, etc.)",
   "main": "index.js",
   "files": [
