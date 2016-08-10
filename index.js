@@ -206,6 +206,7 @@ function installPlugin(nameOrPlugin, options) {
     }
 
     assert(plugin.name, 'plugin must expose a channel name')
+    assert(!(plugin.name in this._plugins), 'plugin is already installed')
     assert.equal(typeof plugin.send, 'function', "'" + plugin.name + '" does not implements `send()`')
     assert(plugin.send.length >= 3, "'" + plugin.name + "' plugin's `send()` method must take at least three arguments")
     assert.equal(typeof plugin.destroy, 'function', "'" + plugin.name + '" does not implements `destroy()`')

@@ -100,7 +100,7 @@ test.test('error delegation', function (test) {
 
     n.once('error', function (err) {
         test.equal(err, error, 'error emitted by plugin should be caught on notifier')
-        test.equal(err.channel, 'test', 'channel should be added to error')
+        test.equal(err.channel, 'test0', 'channel should be added to error')
     })
     p1inst.emitError(error)
 

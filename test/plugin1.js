@@ -6,10 +6,11 @@ if (require.main === module)
 module.exports = MyPlugin
 
 var inherits = require('util').inherits,
-    Plugin   = require('./plugin')
+    Plugin   = require('./plugin'),
+    counter  = 0
 
 function MyPlugin(opts) {
-    Plugin.call(this, 'test', null, opts)
+    Plugin.call(this, 'test' + counter++, null, opts)
 }
 
 inherits(MyPlugin, Plugin)
